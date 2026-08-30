@@ -1,0 +1,205 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 390" width="520" height="390">
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F8F4F1"/>
+      <stop offset="100%" stop-color="#EDE5DF"/>
+    </linearGradient>
+
+    <!-- Gauge arc gradient -->
+    <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1B365D" stop-opacity="0.18"/>
+      <stop offset="40%" stop-color="#FA935A" stop-opacity="0.55"/>
+      <stop offset="75%" stop-color="#D6456E" stop-opacity="0.80"/>
+      <stop offset="100%" stop-color="#481D4A" stop-opacity="0.95"/>
+    </linearGradient>
+
+    <!-- Screen glow -->
+    <radialGradient id="screenGlow" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#C5DCF5" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#7BAED4" stop-opacity="0.2"/>
+    </radialGradient>
+
+    <!-- Phone screen gradient -->
+    <linearGradient id="phoneScreen" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A2740"/>
+      <stop offset="100%" stop-color="#2A3F60"/>
+    </linearGradient>
+
+    <!-- Wave/ring gradient for screen emission -->
+    <radialGradient id="waveGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FA935A" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#FA935A" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Clip for laptop screen -->
+    <clipPath id="laptopScreenClip">
+      <rect x="95" y="120" width="230" height="148" rx="5"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="520" height="390" fill="url(#bgGrad)" rx="16"/>
+
+  <!-- === DASHED GAUGE ARC (background brand motif) === -->
+  <!-- Large outer gauge arc 220–320 deg sweep -->
+  <path d="M 60 360 A 260 260 0 0 1 460 360" fill="none" stroke="#1B365D" stroke-width="1.5" stroke-dasharray="6 8" opacity="0.12"/>
+  <path d="M 90 360 A 230 230 0 0 1 430 360" fill="none" stroke="#D6456E" stroke-width="1" stroke-dasharray="4 9" opacity="0.10"/>
+
+  <!-- Gauge fill arc (coral-to-plum) at bottom -->
+  <path d="M 110 360 A 210 210 0 0 1 320 158" fill="none" stroke="url(#gaugeGrad)" stroke-width="8" stroke-linecap="round" opacity="0.7"/>
+
+  <!-- === DESK / SURFACE === -->
+  <rect x="30" y="310" width="460" height="80" rx="0" fill="#D9CDBF" opacity="0.45"/>
+  <rect x="30" y="308" width="460" height="4" rx="2" fill="#C4B5A4" opacity="0.6"/>
+
+  <!-- === LAPTOP BODY === -->
+  <!-- Laptop base/keyboard -->
+  <rect x="82" y="296" width="258" height="16" rx="3" fill="#CBD5E1"/>
+  <rect x="90" y="299" width="240" height="10" rx="2" fill="#B8C4D4"/>
+  <!-- Touchpad -->
+  <rect x="168" y="301" width="86" height="6" rx="3" fill="#A8B4C4" opacity="0.8"/>
+
+  <!-- Laptop hinge -->
+  <rect x="85" y="292" width="252" height="6" rx="2" fill="#94A3B8"/>
+
+  <!-- Laptop lid back -->
+  <rect x="88" y="116" width="244" height="178" rx="8" fill="#94A3B8"/>
+
+  <!-- Laptop screen bezel -->
+  <rect x="92" y="120" width="236" height="172" rx="6" fill="#1E293B"/>
+
+  <!-- Laptop screen content (code/work) -->
+  <rect x="95" y="123" width="230" height="166" rx="4" fill="#0F1729"/>
+
+  <!-- Screen content lines (code simulation) -->
+  <g opacity="0.85">
+    <!-- Line 1: green -->
+    <rect x="108" y="138" width="80" height="5" rx="2" fill="#22C55E" opacity="0.8"/>
+    <!-- Line 2: blue -->
+    <rect x="108" y="150" width="55" height="5" rx="2" fill="#60A5FA" opacity="0.7"/>
+    <rect x="170" y="150" width="40" height="5" rx="2" fill="#F97316" opacity="0.6"/>
+    <!-- Line 3: white dim -->
+    <rect x="116" y="162" width="95" height="5" rx="2" fill="#94A3B8" opacity="0.5"/>
+    <!-- Line 4: -->
+    <rect x="116" y="174" width="70" height="5" rx="2" fill="#60A5FA" opacity="0.6"/>
+    <!-- Line 5: -->
+    <rect x="108" y="186" width="110" height="5" rx="2" fill="#94A3B8" opacity="0.45"/>
+    <!-- Line 6: rose highlight -->
+    <rect x="116" y="198" width="50" height="5" rx="2" fill="#F43F5E" opacity="0.7"/>
+    <rect x="172" y="198" width="30" height="5" rx="2" fill="#94A3B8" opacity="0.45"/>
+    <!-- Line 7: -->
+    <rect x="108" y="210" width="85" height="5" rx="2" fill="#22C55E" opacity="0.6"/>
+    <!-- Line 8: -->
+    <rect x="116" y="222" width="65" height="5" rx="2" fill="#94A3B8" opacity="0.4"/>
+    <!-- Line 9: -->
+    <rect x="108" y="234" width="100" height="5" rx="2" fill="#60A5FA" opacity="0.5"/>
+    <!-- Line 10: -->
+    <rect x="116" y="246" width="40" height="5" rx="2" fill="#F97316" opacity="0.55"/>
+    <rect x="162" y="246" width="55" height="5" rx="2" fill="#94A3B8" opacity="0.4"/>
+    <!-- Line 11: -->
+    <rect x="108" y="258" width="75" height="5" rx="2" fill="#F43F5E" opacity="0.65"/>
+    <!-- Line 12 cursor blink -->
+    <rect x="108" y="270" width="6" height="9" rx="1" fill="#E2E8F0" opacity="0.9"/>
+  </g>
+
+  <!-- Screen top-left dot indicators -->
+  <circle cx="108" cy="130" r="3.5" fill="#EF4444" opacity="0.9"/>
+  <circle cx="120" cy="130" r="3.5" fill="#F59E0B" opacity="0.9"/>
+  <circle cx="132" cy="130" r="3.5" fill="#22C55E" opacity="0.9"/>
+
+  <!-- Laptop screen glow reflection on desk -->
+  <ellipse cx="210" cy="310" rx="80" ry="6" fill="#7BAED4" opacity="0.08"/>
+
+  <!-- === STUDENT FIGURE (hunched over laptop) === -->
+  <!-- Body / torso -->
+  <ellipse cx="210" cy="266" rx="28" ry="18" fill="#D6A485" opacity="0.9"/>
+  <!-- Shirt -->
+  <path d="M 185 272 Q 210 290 235 272 L 238 310 L 182 310 Z" fill="#4A6FA5" opacity="0.85"/>
+  <!-- Head -->
+  <circle cx="210" cy="246" r="20" fill="#D6A485"/>
+  <!-- Hair -->
+  <path d="M 192 238 Q 200 224 218 228 Q 230 232 232 238 Q 226 226 210 226 Q 194 226 192 238 Z" fill="#2D1B0E"/>
+  <!-- Neck -->
+  <rect x="204" y="262" width="12" height="10" rx="3" fill="#C89070"/>
+  <!-- Arm reaching forward -->
+  <path d="M 232 278 Q 255 268 278 272 Q 288 274 290 280 L 275 283 Q 265 278 248 282 Z" fill="#D6A485"/>
+  <circle cx="292" cy="282" r="9" fill="#C89070"/>
+  <!-- Other arm -->
+  <path d="M 188 278 Q 172 270 155 275 Q 148 278 148 284 L 160 284 Q 167 278 180 279 Z" fill="#D6A485"/>
+  <!-- Glasses (nerdy) -->
+  <circle cx="202" cy="244" r="6" fill="none" stroke="#1B365D" stroke-width="1.5" opacity="0.8"/>
+  <circle cx="218" cy="244" r="6" fill="none" stroke="#1B365D" stroke-width="1.5" opacity="0.8"/>
+  <line x1="208" y1="244" x2="212" y2="244" stroke="#1B365D" stroke-width="1.5" opacity="0.7"/>
+
+  <!-- === PHONE (right side, emitting screen waves) === -->
+  <!-- Phone body -->
+  <rect x="355" y="230" width="58" height="100" rx="10" fill="#1E293B"/>
+  <rect x="359" y="234" width="50" height="92" rx="7" fill="#0F1729"/>
+  <!-- Phone screen content (social media look) -->
+  <!-- notification/feed cards -->
+  <rect x="362" y="238" width="44" height="14" rx="3" fill="#1A3A5C" opacity="0.9"/>
+  <rect x="365" y="241" width="25" height="4" rx="2" fill="#60A5FA" opacity="0.7"/>
+  <rect x="365" y="247" width="15" height="3" rx="1" fill="#94A3B8" opacity="0.5"/>
+  <rect x="362" y="256" width="44" height="14" rx="3" fill="#1A3A5C" opacity="0.9"/>
+  <rect x="365" y="259" width="20" height="4" rx="2" fill="#F43F5E" opacity="0.7"/>
+  <rect x="365" y="265" width="30" height="3" rx="1" fill="#94A3B8" opacity="0.5"/>
+  <rect x="362" y="274" width="44" height="14" rx="3" fill="#1A3A5C" opacity="0.9"/>
+  <rect x="365" y="277" width="28" height="4" rx="2" fill="#22C55E" opacity="0.6"/>
+  <rect x="362" y="292" width="44" height="14" rx="3" fill="#1A3A5C" opacity="0.9"/>
+  <rect x="365" y="295" width="22" height="4" rx="2" fill="#F97316" opacity="0.7"/>
+  <!-- Home indicator -->
+  <rect x="376" y="316" width="16" height="3" rx="1.5" fill="#475569" opacity="0.7"/>
+
+  <!-- Phone screen glow rings (waves emanating from phone) -->
+  <circle cx="384" cy="280" r="42" fill="none" stroke="#FA935A" stroke-width="2" stroke-dasharray="5 6" opacity="0.18"/>
+  <circle cx="384" cy="280" r="62" fill="none" stroke="#D6456E" stroke-width="1.5" stroke-dasharray="4 8" opacity="0.12"/>
+  <circle cx="384" cy="280" r="82" fill="none" stroke="#481D4A" stroke-width="1" stroke-dasharray="3 9" opacity="0.08"/>
+  <!-- Wave fill arcs going left toward student -->
+  <path d="M 348 248 Q 335 265 342 285 Q 337 305 350 318" fill="none" stroke="#FA935A" stroke-width="2.5" stroke-linecap="round" opacity="0.3"/>
+  <path d="M 336 238 Q 316 258 324 282 Q 316 308 332 326" fill="none" stroke="#FA935A" stroke-width="1.5" stroke-linecap="round" opacity="0.18"/>
+
+  <!-- === MOON (fading out — sleep displaced) === -->
+  <g opacity="0.22">
+    <!-- Moon crescent -->
+    <circle cx="415" cy="78" r="26" fill="#1B365D"/>
+    <circle cx="428" cy="70" r="22" fill="#EDE5DF"/>
+  </g>
+  <!-- ZZZ sleep symbols (fading away) -->
+  <text x="426" y="48" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="700" fill="#1B365D" opacity="0.25">Z</text>
+  <text x="442" y="36" font-family="'IBM Plex Mono', monospace" font-size="10" font-weight="700" fill="#1B365D" opacity="0.18">z</text>
+  <text x="454" y="27" font-family="'IBM Plex Mono', monospace" font-size="7" font-weight="700" fill="#1B365D" opacity="0.12">z</text>
+
+  <!-- === GAUGE TICK MARKS (top, brand motif) === -->
+  <g opacity="0.22" transform="translate(210, 360)">
+    <!-- Gauge arc ticks -->
+    <line x1="-175" y1="0" x2="-165" y2="0" stroke="#1B365D" stroke-width="2" transform="rotate(-150)"/>
+    <line x1="-175" y1="0" x2="-170" y2="0" stroke="#1B365D" stroke-width="1.5" transform="rotate(-135)"/>
+    <line x1="-175" y1="0" x2="-165" y2="0" stroke="#1B365D" stroke-width="2" transform="rotate(-120)"/>
+    <line x1="-175" y1="0" x2="-170" y2="0" stroke="#1B365D" stroke-width="1.5" transform="rotate(-105)"/>
+    <line x1="-175" y1="0" x2="-165" y2="0" stroke="#FA935A" stroke-width="2.5" transform="rotate(-90)"/>
+    <line x1="-175" y1="0" x2="-170" y2="0" stroke="#D6456E" stroke-width="1.5" transform="rotate(-75)"/>
+    <line x1="-175" y1="0" x2="-165" y2="0" stroke="#D6456E" stroke-width="2" transform="rotate(-60)"/>
+    <line x1="-175" y1="0" x2="-170" y2="0" stroke="#481D4A" stroke-width="1.5" transform="rotate(-45)"/>
+    <line x1="-175" y1="0" x2="-165" y2="0" stroke="#481D4A" stroke-width="2" transform="rotate(-30)"/>
+  </g>
+
+  <!-- Gauge needle accent pointing high-risk direction -->
+  <g transform="translate(210, 360)">
+    <line x1="0" y1="0" x2="0" y2="-140" stroke="#D6456E" stroke-width="3" stroke-linecap="round" opacity="0.35" transform="rotate(-45)"/>
+    <circle cx="0" cy="0" r="7" fill="#D6456E" opacity="0.4"/>
+  </g>
+
+  <!-- === LABEL ANNOTATIONS === -->
+  <!-- Screen time label -->
+  <rect x="310" y="170" width="82" height="22" rx="5" fill="white" opacity="0.85"/>
+  <text x="321" y="185" font-family="'IBM Plex Sans', sans-serif" font-size="10" font-weight="600" fill="#D6456E">SCREEN TIME</text>
+
+  <!-- Sleep deprived label -->
+  <rect x="388" y="96" width="72" height="22" rx="5" fill="white" opacity="0.75"/>
+  <text x="397" y="111" font-family="'IBM Plex Sans', sans-serif" font-size="10" font-weight="600" fill="#481D4A">SLEEP LOST</text>
+
+  <!-- Burnout risk chip bottom -->
+  <rect x="136" y="338" width="148" height="26" rx="13" fill="#481D4A" opacity="0.9"/>
+  <text x="210" y="355" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="10.5" font-weight="600" fill="white" letter-spacing="1">BURNOUT RISK ↑</text>
+</svg>

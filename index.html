@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Burnout Radar — A Research-Backed Student Self-Check</title>
+  <meta name="description" content="A research-backed student burnout self-check tool based on an empirical machine learning study of 601 university undergraduates in Bangladesh.">
+  <meta name="author" content="Rifat Miah & Dr. A.S.M. Shihavuddin">
+
+  <!-- Google Fonts: Spectral, IBM Plex Sans, IBM Plex Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Spectral:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Custom Stylesheet & Favicon -->
+  <link rel="icon" type="image/png" href="assets/burnout_radar_logo_transparent.png">
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Model Data & ML Engine -->
+  <script src="js/model_data.js"></script>
+  <script src="js/research_data.js"></script>
+  <script src="js/ml_engine.js"></script>
+</head>
+<body>
+
+  <!-- ---------------- NAVIGATION (Strict Single-Line) ---------------- -->
+  <nav class="app-nav">
+    <div class="nav-container">
+      <a href="#" class="brand" onclick="switchTab('tab-assess'); return false;" title="Burnout Radar — Home">
+        <span class="dot"></span>
+        Burnout Radar
+      </a>
+
+      <div class="nav-links">
+        <button type="button" class="nav-link active" data-tab="tab-assess">Self-Check</button>
+        <button type="button" class="nav-link" data-tab="tab-benchmark">ML Benchmark</button>
+        <button type="button" class="nav-link" data-tab="tab-shap">SHAP Factors</button>
+        <button type="button" class="nav-link" data-tab="tab-voices">Student Voices</button>
+        <button type="button" class="nav-link" data-tab="tab-codebook">Codebook</button>
+        <button type="button" class="nav-link" data-tab="tab-about">About Research</button>
+      </div>
+
+      <button type="button" class="nav-cta-btn" onclick="switchTab('tab-assess')">
+        Take Self-Check &rarr;
+      </button>
+    </div>
+  </nav>
+
+  <!-- ==========================================================================
+       TAB 1: SELF-CHECK ASSESSMENT PAGE
+       ========================================================================== -->
+  <div class="tab-pane active" id="tab-assess">
+    
+    <!-- Hero Header -->
+    <header class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <span class="eyebrow">SHAP-informed screening tool</span>
+          <h1 class="headline">See the pattern <em>before</em> it becomes a crisis.</h1>
+          <p class="hero-sub">
+            A short, honest self-check built from a machine-learning study of 601 Bangladeshi university students — the same nine behavioural indices and feature-importance weights used in the published model, made interactive.
+          </p>
+          <div class="hero-actions">
+            <button class="btn-primary" onclick="document.getElementById('assess-form-card').scrollIntoView({behavior:'smooth'})">
+              Start the 2-minute check &rarr;
+            </button>
+            <button class="btn-ghost" onclick="switchTab('tab-about')">
+              About the research
+            </button>
+          </div>
+        </div>
+
+        <!-- Hero Cover Image Card -->
+        <div class="hero-image-card" id="heroImageCard">
+          <img src="assets/hero_cover_art.jpg" alt="Screen vs Sleep Imbalance in Student Burnout">
+        </div>
+      </div>
+    </header>
+
+    <!-- Stat Chips Strip -->
+    <section class="stats">
+      <div class="wrap">
+        <div class="stat-row">
+          <div class="stat-chip">
+            <div class="num">601</div>
+            <div class="lbl">students surveyed to build the underlying model</div>
+          </div>
+          <div class="stat-chip">
+            <div class="num">65.89%</div>
+            <div class="lbl">cross-validated accuracy of the champion classifier</div>
+          </div>
+          <div class="stat-chip">
+            <div class="num">9</div>
+            <div class="lbl">engineered behavioural &amp; academic composite indices</div>
+          </div>
+          <div class="stat-chip">
+            <div class="num">0.71</div>
+            <div class="lbl">ROC-AUC — moderate but reliable discriminative signal</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Assessment Form Card -->
+    <section class="assess" id="assess-section">
+      <div class="wrap">
+        <div class="assess-head">
+          <h2>Where do you sit right now?</h2>
+          <p>Answer honestly about a typical recent week. This mirrors the exact survey items used in the study — nothing is saved or sent anywhere.</p>
+        </div>
+
+        <div class="card" id="assess-form-card">
+
+          <!-- Block 1: Academic Load -->
+          <div class="section-block">
+            <div class="sec-label">Academic Load</div>
+            <div class="field">
+              <div class="field-top">
+                <label for="study">Study hours per day</label>
+                <span class="val mono" id="v-study">3.0 h</span>
+              </div>
+              <input type="range" id="study" min="0.5" max="8.0" step="0.5" value="3.0">
+            </div>
+            <div class="field">
+              <div class="field-top">
+                <label for="cgpa">Current CGPA Standing</label>
+                <span class="val mono" id="v-cgpa">3.20</span>
+              </div>
+              <input type="range" id="cgpa" min="2.0" max="4.0" step="0.05" value="3.20">
+            </div>
+            <div class="field">
+              <div class="field-top">
+                <label for="attendance">Class attendance rate</label>
+                <span class="val mono" id="v-attendance">80%</span>
+              </div>
+              <input type="range" id="attendance" min="20" max="100" step="5" value="80">
+            </div>
+          </div>
+
+          <!-- Block 2: Sleep & Recovery -->
+          <div class="section-block">
+            <div class="sec-label">Sleep &amp; Recovery</div>
+            <div class="field">
+              <div class="field-top">
+                <label for="sleep">Average sleep per night</label>
+                <span class="val mono" id="v-sleep">6.0 h</span>
+              </div>
+              <input type="range" id="sleep" min="3.0" max="10.0" step="0.5" value="6.0">
+            </div>
+            <div class="field">
+              <div class="field-top">
+                <label>Sleep quality &amp; restfulness</label>
+              </div>
+              <div class="seg" data-group="sleepq">
+                <button type="button" data-v="1"><span class="n">1</span>Very poor</button>
+                <button type="button" data-v="2"><span class="n">2</span>Average</button>
+                <button type="button" data-v="3" class="active"><span class="n">3</span>Good</button>
+                <button type="button" data-v="4"><span class="n">4</span>Restful</button>
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-top">
+                <label for="activity">Physical exercise &amp; active sports per day</label>
+                <span class="val mono" id="v-activity">0.5 h</span>
+              </div>
+              <input type="range" id="activity" min="0.0" max="3.0" step="0.25" value="0.5">
+            </div>
+          </div>
+
+          <!-- Block 3: Digital Behaviour -->
+          <div class="section-block">
+            <div class="sec-label">Digital Behaviour</div>
+            <div class="field">
+              <div class="field-top">
+                <label for="social">Social media / screen time per day</label>
+                <span class="val mono" id="v-social">4.0 h</span>
+              </div>
+              <input type="range" id="social" min="0.5" max="10.0" step="0.5" value="4.0">
+            </div>
+          </div>
+
+          <!-- Block 4: Psychological State -->
+          <div class="section-block">
+            <div class="sec-label">Psychological State</div>
+            <div class="field">
+              <div class="field-top">
+                <label>Perceived academic stress level</label>
+              </div>
+              <div class="seg" data-group="stress">
+                <button type="button" data-v="1"><span class="n">1</span>Low</button>
+                <button type="button" data-v="2" class="active"><span class="n">2</span>Mild</button>
+                <button type="button" data-v="3"><span class="n">3</span>High</button>
+                <button type="button" data-v="4"><span class="n">4</span>Severe</button>
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-top">
+                <label>Low mood / depressive feelings / career despair</label>
+              </div>
+              <div class="seg" data-group="depression">
+                <button type="button" data-v="1"><span class="n">1</span>Rarely</button>
+                <button type="button" data-v="2" class="active"><span class="n">2</span>Sometimes</button>
+                <button type="button" data-v="3"><span class="n">3</span>Often</button>
+                <button type="button" data-v="4"><span class="n">4</span>Constantly</button>
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-top">
+                <label>Academic drive &amp; motivation</label>
+              </div>
+              <div class="seg" data-group="motivation">
+                <button type="button" data-v="1"><span class="n">1</span>None</button>
+                <button type="button" data-v="2"><span class="n">2</span>Low</button>
+                <button type="button" data-v="3" class="active"><span class="n">3</span>Steady</button>
+                <button type="button" data-v="4"><span class="n">4</span>Strong</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Block 5: Academic Workload & Pressure -->
+          <div class="section-block">
+            <div class="sec-label">Workload &amp; Deadlines</div>
+            <div class="field">
+              <div class="field-top">
+                <label>Academic pressure &amp; exam anxiety</label>
+              </div>
+              <div class="seg" data-group="pressure">
+                <button type="button" data-v="1"><span class="n">1</span>Light</button>
+                <button type="button" data-v="2"><span class="n">2</span>Moderate</button>
+                <button type="button" data-v="3" class="active"><span class="n">3</span>Heavy</button>
+                <button type="button" data-v="4"><span class="n">4</span>Intense</button>
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-top">
+                <label>Coursework &amp; assignment volume</label>
+              </div>
+              <div class="seg" data-group="workload">
+                <button type="button" data-v="1"><span class="n">1</span>Light</button>
+                <button type="button" data-v="2"><span class="n">2</span>Moderate</button>
+                <button type="button" data-v="3" class="active"><span class="n">3</span>Heavy</button>
+                <button type="button" data-v="4"><span class="n">4</span>Intense</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Calculate Button -->
+          <div class="calc-row">
+            <button type="button" class="btn-primary" onclick="calculateRisk()">
+              Calculate my risk profile &rarr;
+            </button>
+          </div>
+
+          <!-- ---------------- RESULT CARD ---------------- -->
+          <div id="result">
+            <div class="result-card">
+              
+              <!-- Left: Speedometer Needle Arc Gauge -->
+              <div class="gauge-wrap">
+                <svg width="220" height="130" viewBox="0 0 220 130">
+                  <path d="M20 110 A90 90 0 0 1 200 110" fill="none" stroke="#E9E2DC" stroke-width="16" stroke-linecap="round"/>
+                  <path d="M20 110 A90 90 0 0 1 200 110" fill="none" stroke="url(#arcGrad)" stroke-width="16" stroke-linecap="round" id="gaugeArc"/>
+                  <defs>
+                    <linearGradient id="arcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#FA935A"/>
+                      <stop offset="55%" stop-color="#D6456E"/>
+                      <stop offset="100%" stop-color="#481D4A"/>
+                    </linearGradient>
+                  </defs>
+                  <line id="needle" x1="110" y1="110" x2="110" y2="35" stroke="#1B365D" stroke-width="3.5" stroke-linecap="round" style="transform-origin:110px 110px; transform:rotate(-45deg); transition:transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);"/>
+                  <circle cx="110" cy="110" r="6" fill="#1B365D"/>
+                </svg>
+                <div class="gauge-score" id="scoreNum">—</div>
+                <div class="gauge-tier" id="tierLabel"></div>
+              </div>
+
+              <!-- Right: Result Content & Attributions -->
+              <div class="result-body">
+                <h3 id="resultHeadline">Your Risk Breakdown</h3>
+                <p id="resultBlurb"></p>
+
+                <!-- Top Contributors Progress Bars -->
+                <div id="contribList"></div>
+
+                <!-- Tailored Coping Steps -->
+                <div class="recommendations-box">
+                  <h4>Recommended Recovery Steps (JD-R &amp; COR Framework)</h4>
+                  <div id="recsList">
+                    <div class="rec-item"><strong>Digital Detachment:</strong> Disengage from screens 45 minutes before sleep to restore natural circadian melatonin.</div>
+                    <div class="rec-item"><strong>Biological Sleep Hygiene:</strong> Prioritize 7.5–8.0 hours of uninterrupted nocturnal sleep.</div>
+                    <div class="rec-item"><strong>Active Recovery Buffer:</strong> 30 minutes of aerobic exercise or brisk walking to regulate cortisol levels.</div>
+                  </div>
+                </div>
+
+                <!-- Helplines & Clinical Disclaimer -->
+                <div class="disclaimer">
+                  <strong>Confidential Student Helplines:</strong> Kaan Pete Roi: <a href="tel:+8801779554391" style="color:var(--plum); font-weight:600;">+880 1779 554391</a> | National Health Helpline: <a href="tel:16122" style="color:var(--plum); font-weight:600;">16122</a> | Emergency: <a href="tel:999" style="color:var(--plum); font-weight:600;">999</a>.<br><br>
+                  <em>This calculator applies feature weights derived from our empirical study (N = 601, Random Forest, 10-fold CV). It is an educational self-check, not a clinical diagnosis. If you're feeling persistently overwhelmed, reach out to your university counseling center.</em>
+                </div>
+
+                <div style="margin-top: 18px; display: flex; gap: 10px;">
+                  <button type="button" class="btn-ghost" onclick="window.print()" style="font-size:13px; padding:8px 16px;">
+                    🖨️ Print / Save Summary
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ==========================================================================
+       TAB 2: ML BENCHMARK ARENA PAGE
+       ========================================================================== -->
+  <div class="tab-pane" id="tab-benchmark">
+    <section class="benchmark-section" style="padding-top:40px; border-top:none;">
+      <div class="wrap">
+        <div class="section-title-wrap">
+          <span class="eyebrow">10-Model Empirical Evaluation</span>
+          <h2>Machine Learning Benchmark Arena</h2>
+          <p>Comparison across 10 supervised classification algorithms and a soft-voting ensemble evaluated using 10-Fold Stratified Cross-Validation on the survey cohort (N = 601).</p>
+        </div>
+
+        <div class="table-card">
+          <table class="academic-table">
+            <thead>
+              <tr>
+                <th>Model Algorithm</th>
+                <th>Accuracy (%)</th>
+                <th>ROC-AUC</th>
+                <th>Precision (%)</th>
+                <th>Recall (%)</th>
+                <th>F1-Score (%)</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="champion-row">
+                <td><strong>Random Forest Classifier</strong></td>
+                <td><strong>65.89%</strong></td>
+                <td><strong>0.7126</strong></td>
+                <td>61.27%</td>
+                <td>43.53%</td>
+                <td>50.92%</td>
+                <td><span class="badge-tag highlight">Champion</span></td>
+              </tr>
+              <tr>
+                <td>CatBoost Classifier</td>
+                <td>64.39%</td>
+                <td>0.7011</td>
+                <td>58.62%</td>
+                <td>40.00%</td>
+                <td>47.55%</td>
+                <td><span class="badge-tag">Top-Tier</span></td>
+              </tr>
+              <tr>
+                <td>Soft Voting Ensemble</td>
+                <td>64.39%</td>
+                <td>0.6974</td>
+                <td>58.55%</td>
+                <td>40.39%</td>
+                <td>47.80%</td>
+                <td><span class="badge-tag">Ensemble</span></td>
+              </tr>
+              <tr>
+                <td>Gradient Boosting (GBM)</td>
+                <td>63.89%</td>
+                <td>0.6865</td>
+                <td>57.89%</td>
+                <td>38.82%</td>
+                <td>46.48%</td>
+                <td><span class="badge-tag">Competitive</span></td>
+              </tr>
+              <tr>
+                <td>Logistic Regression (ElasticNet)</td>
+                <td>63.39%</td>
+                <td>0.6830</td>
+                <td>58.33%</td>
+                <td>32.94%</td>
+                <td>42.11%</td>
+                <td><span class="badge-tag">Parametric</span></td>
+              </tr>
+              <tr>
+                <td>LightGBM Classifier</td>
+                <td>63.23%</td>
+                <td>0.6835</td>
+                <td>56.32%</td>
+                <td>38.43%</td>
+                <td>45.69%</td>
+                <td><span class="badge-tag">Competitive</span></td>
+              </tr>
+              <tr>
+                <td>Extra Trees Classifier</td>
+                <td>63.23%</td>
+                <td>0.6720</td>
+                <td>56.55%</td>
+                <td>37.25%</td>
+                <td>44.92%</td>
+                <td><span class="badge-tag">Ensemble</span></td>
+              </tr>
+              <tr>
+                <td>Support Vector Machine (RBF)</td>
+                <td>62.73%</td>
+                <td>0.6766</td>
+                <td>56.41%</td>
+                <td>34.51%</td>
+                <td>42.82%</td>
+                <td><span class="badge-tag">Kernel</span></td>
+              </tr>
+              <tr>
+                <td>XGBoost Classifier</td>
+                <td>61.56%</td>
+                <td>0.6698</td>
+                <td>53.30%</td>
+                <td>38.04%</td>
+                <td>44.39%</td>
+                <td><span class="badge-tag">Boosting</span></td>
+              </tr>
+              <tr>
+                <td>Decision Tree (CART)</td>
+                <td>57.57%</td>
+                <td>0.5732</td>
+                <td>49.33%</td>
+                <td>43.14%</td>
+                <td>45.94%</td>
+                <td><span class="badge-tag">Interpretable</span></td>
+              </tr>
+              <tr>
+                <td>Multi-Layer Perceptron (MLP)</td>
+                <td>57.24%</td>
+                <td>0.6015</td>
+                <td>48.55%</td>
+                <td>39.61%</td>
+                <td>43.62%</td>
+                <td><span class="badge-tag">Neural</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empirical Figures for Benchmark -->
+        <div style="margin-top:40px;">
+          <h3 style="font-size:22px; font-family:'Spectral',serif; color:var(--navy); margin-bottom:6px;">Empirical Benchmark Visualizations</h3>
+          <p style="font-size:14px; color:var(--muted); margin-bottom:20px;">Publication-grade visual performance distributions and error-matrix diagnostics derived from 10-fold cross-validation experiments ($N=601$).</p>
+          
+          <div class="figure-grid">
+            <!-- Figure 4: ML Accuracies -->
+            <div class="figure-card">
+              <div class="figure-img-wrap" onclick="openFigureModal('assets/Figure_4_ML_Accuracies.png', 'Figure 4: 10-Fold CV Accuracy Comparison Across 10 Machine Learning Models')">
+                <img src="assets/Figure_4_ML_Accuracies.png" alt="Figure 4: 10-Fold Cross-Validation Accuracy Comparison">
+                <span class="figure-img-hint">Click to Zoom 🔍</span>
+              </div>
+              <div class="figure-body">
+                <div class="figure-header">
+                  <span class="figure-tag champion">Figure 4 • Benchmark</span>
+                  <span style="font-size:12px; font-family:'IBM Plex Mono',monospace; color:var(--rose); font-weight:600;">10-Fold CV</span>
+                </div>
+                <h4 class="figure-title">Cross-Validated Accuracy Across 10 Classifiers &amp; Ensemble</h4>
+                <p class="figure-desc">
+                  Empirical performance spread showing champion Random Forest (65.89%) and Soft-Voting Ensemble (65.06%) leading over linear and deep neural baselines across stratified folds.
+                </p>
+                <div class="figure-takeaways">
+                  <strong>Key Empirical Takeaway:</strong>
+                  Ensemble and tree-based bagging algorithms successfully handled non-linear feature interactions and high-variance psychological survey signals, yielding a +8.65% accuracy advantage over Multi-Layer Perceptrons.
+                </div>
+              </div>
+            </div>
+
+            <!-- Figure 5: Confusion Matrix -->
+            <div class="figure-card">
+              <div class="figure-img-wrap" onclick="openFigureModal('assets/Figure_5_Confusion_Matrix.png', 'Figure 5: Multiclass Confusion Matrix of the Champion Model')">
+                <img src="assets/Figure_5_Confusion_Matrix.png" alt="Figure 5: Multiclass Confusion Matrix">
+                <span class="figure-img-hint">Click to Zoom 🔍</span>
+              </div>
+              <div class="figure-body">
+                <div class="figure-header">
+                  <span class="figure-tag">Figure 5 • Diagnostics</span>
+                  <span style="font-size:12px; font-family:'IBM Plex Mono',monospace; color:var(--navy); font-weight:600;">Error Matrix</span>
+                </div>
+                <h4 class="figure-title">Multiclass Confusion Matrix &amp; Tier Diagnostics</h4>
+                <p class="figure-desc">
+                  Normalized confusion matrix for Low, Moderate, and High burnout classifications, evaluating cross-tier misclassification rates and class boundary sensitivity.
+                </p>
+                <div class="figure-takeaways">
+                  <strong>Key Empirical Takeaway:</strong>
+                  High Burnout Risk exhibited superior true-positive sensitivity (low false-negative rate), ensuring critically vulnerable students are accurately flagged for clinical support with minimal triage omissions.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <!-- ==========================================================================
+       TAB 3: SHAP FACTORS PAGE
+       ========================================================================== -->
+  <div class="tab-pane" id="tab-shap">
+    <section class="benchmark-section" style="padding-top:40px; border-top:none;">
+      <div class="wrap">
+        <div class="section-title-wrap">
+          <span class="eyebrow">Explainable AI (XAI)</span>
+          <h2>SHAP Global Feature Importance Ranking</h2>
+          <p>Mean absolute SHAP value (|SHAP|) ranking calculated via TreeExplainer on the champion Random Forest model across all 601 surveyed students.</p>
+        </div>
+
+        <div class="shap-grid">
+          <div class="card" style="padding:24px;">
+            <h3 style="font-size:18px; margin-bottom:14px; font-family:'IBM Plex Sans',sans-serif; font-weight:700;">Key SHAP Insights</h3>
+            <p style="font-size:14px; color:var(--muted); line-height:1.6; margin-bottom:12px;">
+              1. <strong>Academic Performance &amp; CGPA</strong> are the strongest single predictors of student burnout status, capturing cumulative academic strain.
+            </p>
+            <p style="font-size:14px; color:var(--muted); line-height:1.6; margin-bottom:12px;">
+              2. <strong>Screen-to-Sleep Ratio (SSDR)</strong> and <strong>Burnout Vulnerability Index (BVI)</strong> demonstrated superior predictive strength compared to raw un-engineered survey variables.
+            </p>
+            <p style="font-size:14px; color:var(--muted); line-height:1.6;">
+              3. Fixed sociodemographics (Gender, Age group, Degree tier) contributed negligibly (|SHAP| &lt; 0.015), showing that burnout in Bangladeshi universities is driven by lifestyle and academic pressure rather than static demographic traits.
+            </p>
+          </div>
+
+          <div class="card" style="padding:24px;">
+            <h3 style="font-size:18px; margin-bottom:14px; font-family:'IBM Plex Sans',sans-serif; font-weight:700;">Top 6 Feature Weights</h3>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:600; margin-bottom:4px;">
+                  <span>Academic Performance Index</span><span class="mono">|SHAP| = 0.0825</span>
+                </div>
+                <div class="contrib-bar"><span style="width:100%; background:var(--rose);"></span></div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:600; margin-bottom:4px;">
+                  <span>Current CGPA Midpoint</span><span class="mono">|SHAP| = 0.0770</span>
+                </div>
+                <div class="contrib-bar"><span style="width:93%; background:var(--rose);"></span></div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:600; margin-bottom:4px;">
+                  <span>Screen-to-Sleep Ratio</span><span class="mono">|SHAP| = 0.0633</span>
+                </div>
+                <div class="contrib-bar"><span style="width:77%; background:var(--coral);"></span></div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:600; margin-bottom:4px;">
+                  <span>Burnout Vulnerability Index</span><span class="mono">|SHAP| = 0.0506</span>
+                </div>
+                <div class="contrib-bar"><span style="width:61%; background:var(--coral);"></span></div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:600; margin-bottom:4px;">
+                  <span>Daily Social Media Screen Time</span><span class="mono">|SHAP| = 0.0430</span>
+                </div>
+                <div class="contrib-bar"><span style="width:52%; background:var(--plum);"></span></div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:600; margin-bottom:4px;">
+                  <span>Study-to-Rest Ratio</span><span class="mono">|SHAP| = 0.0426</span>
+                </div>
+                <div class="contrib-bar"><span style="width:51%; background:var(--plum);"></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empirical Figure 6: SHAP Summary Beeswarm Plot -->
+        <div style="margin-top:40px;">
+          <h3 style="font-size:22px; font-family:'Spectral',serif; color:var(--navy); margin-bottom:6px;">Empirical SHAP Summary &amp; Beeswarm Plot</h3>
+          <p style="font-size:14px; color:var(--muted); margin-bottom:20px;">Individual sample-level SHAP attributions explaining how specific feature magnitudes drive burnout probabilities ($N=601$).</p>
+
+          <div class="figure-card" style="max-width:960px; margin:0 auto;">
+            <div class="figure-img-wrap" onclick="openFigureModal('assets/Figure_6_SHAP.png', 'Figure 6: Global SHAP Summary Beeswarm Plot across 601 Students')">
+              <img src="assets/Figure_6_SHAP.png" alt="Figure 6: Global SHAP Summary Plot" style="max-height:480px;">
+              <span class="figure-img-hint">Click to Zoom 🔍</span>
+            </div>
+            <div class="figure-body">
+              <div class="figure-header">
+                <span class="figure-tag champion">Figure 6 • Explainable AI</span>
+                <span style="font-size:12px; font-family:'IBM Plex Mono',monospace; color:var(--rose); font-weight:600;">TreeExplainer (RF)</span>
+              </div>
+              <h4 class="figure-title">Global SHAP Feature Directionality &amp; Magnitude Distribution</h4>
+              <p class="figure-desc">
+                Beeswarm scatter plot depicting each student as a colored point. Point position on the horizontal axis indicates whether that attribute pushed risk higher (+SHAP) or lower (-SHAP). Color intensity reflects the feature's raw value (Red = High, Blue = Low).
+              </p>
+              <div class="figure-takeaways">
+                <strong>Empirical Explainability Analysis:</strong>
+                • <strong>Academic Strain &amp; CGPA:</strong> High values (Red points) concentrate sharply to the right, serving as the strongest upward driver of burnout risk.<br>
+                • <strong>Screen-to-Sleep Displacement:</strong> High screen time combined with sleep deprivation systematically inflates burnout risk across all student majors.<br>
+                • <strong>Protective Buffers:</strong> Elevated sleep quality and structured rest intervals consistently produce negative SHAP values, buffering students against academic exhaustion.
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <!-- ==========================================================================
+       TAB 4: STUDENT VOICES PAGE
+       ========================================================================== -->
+  <div class="tab-pane" id="tab-voices">
+    <section class="benchmark-section" style="padding-top:40px; border-top:none;">
+      <div class="wrap">
+        <div class="section-title-wrap">
+          <span class="eyebrow">Qualitative Triangulation (N = 20)</span>
+          <h2>Student Narrative Excerpts</h2>
+          <p>Triangulating quantitative machine learning findings against verbatim quotes from semi-structured interviews with 20 Bangladeshi university students (Cohen's Kappa &kappa; = 0.82).</p>
+        </div>
+
+        <div class="quotes-grid">
+          <div class="quote-card">
+            <div class="quote-text">
+              &ldquo;I lay in bed looking at my phone until 3 AM. It’s not that I want to scroll, it’s that opening my books makes my chest feel heavy.&rdquo;
+            </div>
+            <div class="quote-meta">
+              <span>Student #04 &bull; 3rd Year B.Sc.</span>
+              <span>Digital Escapism</span>
+            </div>
+          </div>
+
+          <div class="quote-card">
+            <div class="quote-text">
+              &ldquo;We have back-to-back quizzes and assignments every single week. If your CGPA falls below 3.5, you feel like your future is completely doomed.&rdquo;
+            </div>
+            <div class="quote-meta">
+              <span>Student #11 &bull; 2nd Year BBA</span>
+              <span>Academic Pressure</span>
+            </div>
+          </div>
+
+          <div class="quote-card">
+            <div class="quote-text">
+              &ldquo;When I started running for 30 minutes every evening with my roommate, my sleep improved and the constant morning brain fog went away.&rdquo;
+            </div>
+            <div class="quote-meta">
+              <span>Student #17 &bull; Final Year B.Sc.</span>
+              <span>Physical Activity Buffer</span>
+            </div>
+          </div>
+
+          <div class="quote-card">
+            <div class="quote-text">
+              &ldquo;You never really rest. Even when you are with friends or watching TV, in the back of your mind you know 3 deadlines are waiting tomorrow.&rdquo;
+            </div>
+            <div class="quote-meta">
+              <span>Student #08 &bull; 4th Year CSE</span>
+              <span>Chronic Workload</span>
+            </div>
+          </div>
+
+          <div class="quote-card">
+            <div class="quote-text">
+              &ldquo;My family expects high grades, and tuition pressure takes up another 3 hours every afternoon. Sleep is the only thing I can sacrifice.&rdquo;
+            </div>
+            <div class="quote-meta">
+              <span>Student #19 &bull; 2nd Year EEE</span>
+              <span>Sleep Deprivation</span>
+            </div>
+          </div>
+
+          <div class="quote-card">
+            <div class="quote-text">
+              &ldquo;Having just one professor who listens and gives extensions when everything is crashing down makes all the difference between passing and dropping out.&rdquo;
+            </div>
+            <div class="quote-meta">
+              <span>Student #14 &bull; 1st Year English</span>
+              <span>Institutional Support</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ==========================================================================
+       TAB 5: DATASET CODEBOOK PAGE
+       ========================================================================== -->
+  <div class="tab-pane" id="tab-codebook">
+    <section class="benchmark-section" style="padding-top:40px; border-top:none;">
+      <div class="wrap">
+        <div class="section-title-wrap">
+          <span class="eyebrow">Variable Dictionary</span>
+          <h2>Research Dataset Codebook</h2>
+          <p>Operational definition of all raw survey variables and domain-engineered composite indices used in the machine learning modeling pipeline.</p>
+        </div>
+
+        <div class="table-card">
+          <table class="academic-table">
+            <thead>
+              <tr>
+                <th>Variable Key</th>
+                <th>Domain</th>
+                <th>Measurement Scale</th>
+                <th>Theoretical Range</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>study_hours</code></td>
+                <td><span class="badge-tag">Academic</span></td>
+                <td>Continuous (Hours/day)</td>
+                <td>0.5 – 8.0 hrs</td>
+                <td>Self-reported dedicated daily study duration outside of class.</td>
+              </tr>
+              <tr>
+                <td><code>sleep_hours</code></td>
+                <td><span class="badge-tag">Circadian</span></td>
+                <td>Continuous (Hours/day)</td>
+                <td>3.0 – 10.0 hrs</td>
+                <td>Total nocturnal sleep duration per 24-hour cycle.</td>
+              </tr>
+              <tr>
+                <td><code>social_media</code></td>
+                <td><span class="badge-tag">Digital</span></td>
+                <td>Continuous (Hours/day)</td>
+                <td>0.5 – 10.0 hrs</td>
+                <td>Time spent on social networking platforms and recreational screen time.</td>
+              </tr>
+              <tr>
+                <td><code>physical_activity</code></td>
+                <td><span class="badge-tag">Lifestyle</span></td>
+                <td>Continuous (Hours/day)</td>
+                <td>0.0 – 3.0 hrs</td>
+                <td>Duration of daily sports, gym, or aerobic physical exercise.</td>
+              </tr>
+              <tr>
+                <td><code>screen_to_sleep_ratio</code></td>
+                <td><span class="badge-tag highlight">Composite</span></td>
+                <td>Ratio Index</td>
+                <td>0.05 – 3.33</td>
+                <td>Ratio of daily social screen time to daily sleep duration (SSDR).</td>
+              </tr>
+              <tr>
+                <td><code>burnout_vulnerability_index</code></td>
+                <td><span class="badge-tag highlight">Composite</span></td>
+                <td>Engineered Index</td>
+                <td>0.50 – 24.00</td>
+                <td>Interaction of psychological strain and workload divided by restorative buffers.</td>
+              </tr>
+              <tr>
+                <td><code>academic_performance_index</code></td>
+                <td><span class="badge-tag highlight">Composite</span></td>
+                <td>Composite Score</td>
+                <td>0.45 – 3.80</td>
+                <td>Normalized CGPA midpoint scaled by class attendance percentage.</td>
+              </tr>
+              <tr>
+                <td><code>psychological_strain_index</code></td>
+                <td><span class="badge-tag highlight">Composite</span></td>
+                <td>Sum Index (2–12)</td>
+                <td>2 – 12</td>
+                <td>Additive composite of stress score, depression score, and academic pressure.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ==========================================================================
+       TAB 6: ABOUT RESEARCH PAGE
+       ========================================================================== -->
+  <div class="tab-pane" id="tab-about">
+    <section class="about" style="padding-top:40px; border-top:none;">
+      <div class="wrap">
+        <div class="about-grid" style="margin-bottom:48px;">
+          <!-- About Radar Emblem -->
+          <div class="about-image-card" id="aboutImageCard">
+            <img src="assets/radar_compass_emblem.jpg" alt="Burnout Radar Compass Emblem">
+          </div>
+
+          <div>
+            <h2>About the research behind this tool</h2>
+            <p>
+              Burnout Radar is built on an explanatory sequential mixed-methods study that trained ten supervised classifiers and a soft-voting ensemble on survey data from 601 university students in Bangladesh, then explained the champion Random Forest model with SHAP, and triangulated the findings against 20 in-depth qualitative interviews.
+            </p>
+            <p>
+              The strongest predictors weren't fixed demographic traits like age or gender — they were cumulative academic performance strain, the ratio of screen time to sleep, and digital escapism as an avoidance coping mechanism. This tool lets you weigh those same factors for yourself.
+            </p>
+            <div class="cite">
+              Rifat Miah &amp; A.S.M. Shihavuddin — "Explainable Machine Learning for Student Burnout Classification and Risk Stratification: A Mixed-Methods Study with Qualitative Triangulation." Presidency University, Dhaka.
+            </div>
+          </div>
+        </div>
+
+        <!-- Empirical Figures for About Section -->
+        <div style="border-top:1px solid var(--line); padding-top:40px;">
+          <h3 style="font-size:24px; font-family:'Spectral',serif; color:var(--navy); margin-bottom:6px;">Methodological Architecture &amp; Demographic Profiles</h3>
+          <p style="font-size:14px; color:var(--muted); margin-bottom:24px;">Core workflow framework, sample epidemiology, and demographic invariance charts from the research study.</p>
+
+          <div class="figure-grid">
+            <!-- Figure 1: Workflow -->
+            <div class="figure-card" style="grid-column: 1 / -1;">
+              <div class="figure-img-wrap" onclick="openFigureModal('assets/Figure_1_Workflow.png', 'Figure 1: Explanatory Sequential Mixed-Methods Research Workflow Framework')">
+                <img src="assets/Figure_1_Workflow.png" alt="Figure 1: Research Workflow Diagram" style="max-height:420px;">
+                <span class="figure-img-hint">Click to Zoom 🔍</span>
+              </div>
+              <div class="figure-body">
+                <div class="figure-header">
+                  <span class="figure-tag champion">Figure 1 • Methodology</span>
+                  <span style="font-size:12px; font-family:'IBM Plex Mono',monospace; color:var(--rose); font-weight:600;">Two-Phase Architecture</span>
+                </div>
+                <h4 class="figure-title">Explanatory Sequential Mixed-Methods Research Framework</h4>
+                <p class="figure-desc">
+                  Two-phase study integration: Phase 1 (Quantitative: 601 undergraduate surveys, 9 engineered composite indicators, 10 supervised classification models, SHAP feature interpretation) followed by Phase 2 (Qualitative: 20 semi-structured interviews with thematic codebook triangulation).
+                </p>
+                <div class="figure-takeaways">
+                  <strong>Key Methodological Insight:</strong>
+                  Qualitative interview triangulation unraveled the psychological reasons behind the machine learning findings—revealing that bedtime smartphone doom-scrolling serves as an emotional avoidance coping mechanism that inadvertently exacerbates cognitive academic fatigue.
+                </div>
+              </div>
+            </div>
+
+            <!-- Figure 2: Distribution -->
+            <div class="figure-card">
+              <div class="figure-img-wrap" onclick="openFigureModal('assets/Figure_2_Distribution.png', 'Figure 2: Distribution of Student Burnout Severity Tiers across Cohort')">
+                <img src="assets/Figure_2_Distribution.png" alt="Figure 2: Burnout Severity Distribution">
+                <span class="figure-img-hint">Click to Zoom 🔍</span>
+              </div>
+              <div class="figure-body">
+                <div class="figure-header">
+                  <span class="figure-tag">Figure 2 • Epidemiology</span>
+                  <span style="font-size:12px; font-family:'IBM Plex Mono',monospace; color:var(--navy); font-weight:600;">Sample N=601</span>
+                </div>
+                <h4 class="figure-title">Distribution of Student Burnout Severity Tiers</h4>
+                <p class="figure-desc">
+                  Prevalence spread across Low (33.4%), Moderate (37.6%), and High (29.0%) burnout tiers based on validated psychological cutoff scores.
+                </p>
+                <div class="figure-takeaways">
+                  <strong>Key Empirical Takeaway:</strong>
+                  Over 66% of the surveyed university population exhibited elevated or acute burnout levels, demonstrating that academic distress is a systemic undergraduate challenge rather than an isolated phenomenon.
+                </div>
+              </div>
+            </div>
+
+            <!-- Figure 3: Gender -->
+            <div class="figure-card">
+              <div class="figure-img-wrap" onclick="openFigureModal('assets/Figure_3_Gender.png', 'Figure 3: Gender & Demographic Stratification Analysis')">
+                <img src="assets/Figure_3_Gender.png" alt="Figure 3: Gender and Demographic Breakdown">
+                <span class="figure-img-hint">Click to Zoom 🔍</span>
+              </div>
+              <div class="figure-body">
+                <div class="figure-header">
+                  <span class="figure-tag">Figure 3 • Demographics</span>
+                  <span style="font-size:12px; font-family:'IBM Plex Mono',monospace; color:var(--navy); font-weight:600;">Subgroup Invariance</span>
+                </div>
+                <h4 class="figure-title">Gender &amp; Demographic Stratification Comparison</h4>
+                <p class="figure-desc">
+                  Symptom severity breakdown cross-tabulated between male and female students across core academic and emotional stress metrics.
+                </p>
+                <div class="figure-takeaways">
+                  <strong>Key Empirical Takeaway:</strong>
+                  Both genders demonstrated highly similar symptom severity distributions ($p > 0.05$), proving that burnout risk is primarily governed by behavioral and academic factors rather than static demographic markers.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <!-- ---------------- FIGURE ZOOM LIGHTBOX MODAL ---------------- -->
+  <div class="fig-modal" id="figureModal" onclick="closeFigureModal(event)">
+    <div class="fig-modal-content" onclick="event.stopPropagation()">
+      <button type="button" class="fig-modal-close" onclick="closeFigureModal(event)">&times;</button>
+      <img id="figModalImg" src="" alt="Zoomed Research Figure">
+      <div style="padding:14px 20px; background:#FBF8F6; border-top:1px solid var(--line);">
+        <h4 id="figModalTitle" style="font-family:'Spectral',serif; font-size:16px; color:var(--navy); margin:0;"></h4>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------------- FOOTER ---------------- -->
+  <footer>
+    <div class="wrap">
+      <p>
+        Burnout Radar &bull; An educational companion to a peer-reviewed research study.<br>
+        Not a diagnostic instrument. All computations run 100% locally in your browser. No data leaves your machine.
+      </p>
+      <p class="mono">&copy; 2026 &bull; Rifat Miah &amp; Dr. A.S.M. Shihavuddin</p>
+    </div>
+  </footer>
+
+  <!-- ---------------- LOGIC CONTROLLER SCRIPT ---------------- -->
+  <script src="js/app.js"></script>
+
+</body>
+</html>
