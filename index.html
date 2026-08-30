@@ -23,7 +23,7 @@
 </head>
 <body>
 
-  <!-- ---------------- NAVIGATION (Strict Single-Line) ---------------- -->
+  <!-- ---------------- NAVIGATION (Fully Responsive) ---------------- -->
   <nav class="app-nav">
     <div class="nav-container">
       <a href="#" class="brand" onclick="switchTab('tab-assess'); return false;" title="Burnout Radar — Home">
@@ -31,19 +31,32 @@
         Burnout Radar
       </a>
 
-      <div class="nav-links">
+      <!-- Mobile Hamburger Toggle -->
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+      </button>
+
+      <!-- Nav Links Menu -->
+      <div class="nav-links" id="navLinks">
         <button type="button" class="nav-link active" data-tab="tab-assess">Self-Check</button>
         <button type="button" class="nav-link" data-tab="tab-benchmark">ML Benchmark</button>
         <button type="button" class="nav-link" data-tab="tab-shap">SHAP Factors</button>
         <button type="button" class="nav-link" data-tab="tab-voices">Student Voices</button>
         <button type="button" class="nav-link" data-tab="tab-codebook">Codebook</button>
         <button type="button" class="nav-link" data-tab="tab-about">About Research</button>
+        <button type="button" class="nav-cta-btn mobile-only" onclick="switchTab('tab-assess')">
+          Take Self-Check &rarr;
+        </button>
       </div>
 
-      <button type="button" class="nav-cta-btn" onclick="switchTab('tab-assess')">
+      <button type="button" class="nav-cta-btn desktop-only" onclick="switchTab('tab-assess')">
         Take Self-Check &rarr;
       </button>
     </div>
+    <!-- Mobile Backdrop -->
+    <div class="nav-backdrop" id="navBackdrop"></div>
   </nav>
 
   <!-- ==========================================================================
@@ -327,6 +340,9 @@
         </div>
 
         <div class="table-card">
+          <div class="table-scroll-hint">
+            <span class="scroll-icon">⇄</span> Swipe table horizontally to explore all metrics
+          </div>
           <table class="academic-table">
             <thead>
               <tr>
@@ -691,6 +707,9 @@
         </div>
 
         <div class="table-card">
+          <div class="table-scroll-hint">
+            <span class="scroll-icon">⇄</span> Swipe table horizontally to explore all columns
+          </div>
           <table class="academic-table">
             <thead>
               <tr>

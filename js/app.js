@@ -6,6 +6,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   initTabs();
+  initMobileNav();
   initSliders();
   initSegmentedButtons();
 });
@@ -23,6 +24,9 @@ function switchTab(tabId) {
     btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
   });
 
+  // Close mobile nav drawer if open
+  closeMobileNav();
+
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -36,7 +40,75 @@ function initTabs() {
   });
 }
 
+// ---------- Mobile Nav Controller ----------
+function initMobileNav() {
+  const toggle = document.getElementById('navToggle');
+  const backdrop = document.getElementById('navBackdrop');
+  const navLinks = document.getElementById('navLinks');
+
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      const isOpen = navLinks && navLinks.classList.contains('mobile-open');
+      if (isOpen) {
+        closeMobileNav();
+      } else {
+        openMobileNav();
+      }
+    });
+  }
+
+  if (backdrop) {
+    backdrop.addEventListener('click', () => {
+      closeMobileNav();
+    });
+  }
+
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeMobileNav();
+    }
+  });
+
+  // Handle window resize
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 900) {
+      closeMobileNav();
+    }
+  });
+}
+
+function openMobileNav() {
+  const toggle = document.getElementById('navToggle');
+  const backdrop = document.getElementById('navBackdrop');
+  const navLinks = document.getElementById('navLinks');
+
+  if (navLinks) navLinks.classList.add('mobile-open');
+  if (toggle) {
+    toggle.classList.add('active');
+    toggle.setAttribute('aria-expanded', 'true');
+  }
+  if (backdrop) backdrop.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMobileNav() {
+  const toggle = document.getElementById('navToggle');
+  const backdrop = document.getElementById('navBackdrop');
+  const navLinks = document.getElementById('navLinks');
+
+  if (navLinks) navLinks.classList.remove('mobile-open');
+  if (toggle) {
+    toggle.classList.remove('active');
+    toggle.setAttribute('aria-expanded', 'false');
+  }
+  if (backdrop) backdrop.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
 window.switchTab = switchTab;
+window.openMobileNav = openMobileNav;
+window.closeMobileNav = closeMobileNav;
 
 // ---------- 1. Sliders Logic ----------
 const sliderMap = {
