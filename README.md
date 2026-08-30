@@ -19,7 +19,10 @@
 
 ---
 
-## 🚀 Live Demo & Deployment
+## 🚀 Live Web Application & Deployment
+
+- 🌐 **Live Demo (Netlify):** [https://burnoutwebapplication.netlify.app/](https://burnoutwebapplication.netlify.app/)
+- 💻 **Source Repository:** [https://github.com/rifatmiah92/Burnout-web-application](https://github.com/rifatmiah92/Burnout-web-application)
 
 This application is built with standard web technologies (HTML5, Vanilla CSS3, JavaScript ES6+) with **zero external server dependencies** — all ML risk calculation and SHAP attributions run 100% client-side in the browser.
 
