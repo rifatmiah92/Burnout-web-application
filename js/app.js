@@ -196,6 +196,58 @@ function calculateRisk() {
   const cgpa = parseFloat(document.getElementById('cgpa').value);
   const { stress, depression, motivation, sleepq, pressure, workload } = state;
 
+  // -----------------------------------------------------------------------
+  // PRIMARY PATH: Use real trained ML model (RF + LR ensemble) via mlEngine
+  // -----------------------------------------------------------------------
+  if (window.mlEngine && window.mlEngine.isReady) {
+    const input = {
+      stress_score: stress,
+      depression_score: depression,
+      academic_pressure_score: pressure,
+      workload_score: workload,
+      motivation_score: motivation,
+      sleep_quality_score: sleepq,
+      sleep_hours_numeric: sleep,
+      study_hours_numeric: study,
+      social_media_hours: social,
+      physical_activity_hours: activity,
+      cgpa_midpoint: cgpa,
+      attendance_pct: attendance,
+      part_time_score: 0,
+      gender: 'Male',
+      age_group: '21-22',
+      degree: "Bachelor's",
+      academic_year: '2nd Year'
+    };
+
+    try {
+      const result = window.mlEngine.assessStudent(input, 0.38);
+      const score = Math.round(result.finalProbability * 100);
+
+      // Build top contributions from factorAttributions for progress bars
+      const top = result.factorAttributions.slice(0, 5).map(f => ({
+        key: f.key,
+        contrib: f.absImpact,
+        value: Math.min(1, Math.max(0, f.absImpact / 5))
+      }));
+
+      renderResult(score, top, {
+        screenSleepRaw: result.engineered.screen_to_sleep_ratio,
+        sleep,
+        social,
+        stress,
+        depression,
+        cgpa
+      });
+      return;
+    } catch (e) {
+      console.warn('ML engine error, falling back to heuristic:', e);
+    }
+  }
+
+  // -----------------------------------------------------------------------
+  // FALLBACK PATH: Heuristic SHAP-weighted formula (used if model not loaded)
+  // -----------------------------------------------------------------------
   // Domain Mathematical Composite Formulas from Paper
   const psychStrainRaw = stress + depression;
   const acadPressureIdx = pressure + workload;

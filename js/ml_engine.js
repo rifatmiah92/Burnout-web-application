@@ -171,8 +171,9 @@ class StudentBurnoutMLEngine {
     const lrProbability = this.predictLogisticRegression(xVector);
     const ensembleProbability = (rfProbability * 0.6 + lrProbability * 0.4);
 
-    // Primary calibrated probability (Random Forest)
-    const prob = rfProbability;
+    // Primary calibrated probability (Soft Ensemble: RF×0.6 + LR×0.4)
+    // Both RF and ensemble probabilities are reported; ensemble is used for classification.
+    const prob = ensembleProbability;
     const isHighBurnout = prob >= threshold;
 
     // Severity tier stratification
